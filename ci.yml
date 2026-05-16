@@ -1,0 +1,41 @@
+name: CI — Build & Type Check
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build & Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout kode
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependensi
+        run: npm ci
+
+      - name: Type check TypeScript
+        run: npm run type-check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build produksi
+        run: npm run build
+
+      - name: Upload artifact build
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
